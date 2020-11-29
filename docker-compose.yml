@@ -23,7 +23,7 @@ services:
        restart: unless-stopped
 
   obsapp:
-       image: obsmail:1.0
+       image: danielmonga/observium-mail
        container_name: obs
        hostname: obs.localdomain
        environment:
