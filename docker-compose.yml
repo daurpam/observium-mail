@@ -1,0 +1,52 @@
+# Docker compose file for Observium+Sendmail
+# Maintained by @daurpam
+
+version: '3'
+
+services:
+  obsdb:
+       image: mariadb:latest
+       container_name: obsdb
+       environment:
+         - MYSQL_ROOT_PASSWORD=passw0rd
+         - MYSQL_USER=observium
+         - MYSQL_PASSWORD=passw0rd
+         - MYSQL_DATABASE=observium
+         - TZ=Europe/Madrid
+       volumes:
+         - /etc/localtime:/etc/localtime:ro
+         - ./data:/var/lib/mysql
+       networks:
+         - proxy_default
+       ports:
+         - "3306:3306"
+       restart: unless-stopped
+
+  obsapp:
+       image: obsmail:1.0
+       container_name: obs
+       hostname: obs.localdomain
+       environment:
+         - OBSERVIUM_ADMIN_USER=admin
+         - OBSERVIUM_ADMIN_PASS=passw0rd
+         - OBSERVIUM_DB_HOST=obsdb
+         - OBSERVIUM_DB_NAME=observium
+         - OBSERVIUM_DB_USER=observium
+         - OBSERVIUM_DB_PASS=passw0rd
+         - OBSERVIUM_BASE_URL=https://site.example.org
+         - TZ=Europe/Madrid
+       volumes:
+         - /etc/localtime:/etc/localtime:ro
+         - ./logs:/opt/observium/logs
+         - ./rrd:/opt/observium/rrd
+       networks:
+         - proxy_default
+       ports:
+         - "80:80"
+       restart: unless-stopped
+       depends_on:
+         - obsdb
+
+networks:
+  proxy_default:
+      external: true
