@@ -55,9 +55,6 @@ RUN chmod a+x /opt/observium/observium-init.sh
 
 RUN chown -R www-data:www-data /opt/observium
 RUN find /opt -ls
-#RUN cd /opt/observium && \
-#    ./discovery.php -u && \
-#    ./adduser.php $OBSERVIUM_ADMIN_USER $OBSERVIUM_ADMIN_PASS 10
 
 # configure php modules
 RUN phpenmod mcrypt
@@ -69,7 +66,6 @@ RUN a2dismod mpm_event && \
     a2enmod rewrite
 
 # configure apache configuration
-#RUN mv /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf.orig
 COPY observium-apache24 /etc/apache2/sites-available/000-default.conf
 RUN rm -fr /var/www
 
